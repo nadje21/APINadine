@@ -141,6 +141,25 @@ export default function Home() {
                 <TestChatBot />
               </div>
 
+              {/* Demo App - Natuurkunde */}
+              <div className="border-l-4 border-blue-500 pl-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Demo App: Natuurkunde Oefenen
+                </h3>
+                <p className="text-gray-600 mb-3">
+                  Bekijk een voorbeeld van wat je kunt bouwen! Een interactieve app waar leerlingen natuurkunde elektriciteitsberekeningen kunnen oefenen.
+                </p>
+                <a
+                  href="/natuurkunde"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>Open Natuurkunde App</span>
+                </a>
+              </div>
+
               {/* Step 6 - Build Step */}
               <div className="border-l-4 border-purple-500 pl-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
