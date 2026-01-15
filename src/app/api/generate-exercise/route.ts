@@ -31,7 +31,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+      }
+    })
 
     const formulas = {
       energie: 'E = P × t (Energie = Vermogen × tijd)',
@@ -79,9 +86,15 @@ Geef ALLEEN de JSON, geen extra tekst.`
     const result = await model.generateContent(prompt)
     const response = result.response.text()
 
+    console.log('AI Response:', response)
+
     const jsonMatch = response.match(/\{[\s\S]*\}/)
     if (!jsonMatch) {
-      throw new Error('Geen geldige JSON ontvangen van AI')
+      console.error('No JSON found in response:', response)
+      return NextResponse.json(
+        { error: 'AI gaf geen geldige JSON terug. Probeer opnieuw.' },
+        { status: 500 }
+      )
     }
 
     const exerciseData: ExerciseData = JSON.parse(jsonMatch[0])
@@ -95,8 +108,12 @@ Geef ALLEEN de JSON, geen extra tekst.`
 
   } catch (error) {
     console.error('Error generating exercise:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Onbekende fout'
     return NextResponse.json(
-      { error: 'Fout bij het genereren van opgave' },
+      {
+        error: 'Fout bij het genereren van opgave',
+        details: errorMessage
+      },
       { status: 500 }
     )
   }

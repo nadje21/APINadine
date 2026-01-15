@@ -66,15 +66,24 @@ export default function NatuurkundeOefenApp() {
         body: JSON.stringify({ formula_type: formulaType, difficulty })
       })
 
-      if (!response.ok) throw new Error('Fout bij genereren opgave')
-
       const data = await response.json()
+
+      if (!response.ok) {
+        const errorMsg = data.details || data.error || 'Fout bij genereren opgave'
+        throw new Error(errorMsg)
+      }
+
+      if (!data.exercise) {
+        throw new Error('Geen opgave ontvangen van de server')
+      }
+
       setExercise(data.exercise)
       setCurrentStep('gegeven')
       resetAnswers()
     } catch (error) {
       console.error('Error:', error)
-      alert('Fout bij het genereren van een opgave. Probeer opnieuw.')
+      const message = error instanceof Error ? error.message : 'Onbekende fout'
+      alert(`Fout bij het genereren van een opgave:\n${message}\n\nControleer of je GEMINI_API_KEY correct is ingesteld in .env.local`)
     } finally {
       setIsLoading(false)
     }
@@ -128,9 +137,17 @@ export default function NatuurkundeOefenApp() {
         })
       })
 
-      if (!response.ok) throw new Error('Fout bij controleren antwoord')
-
       const data = await response.json()
+
+      if (!response.ok) {
+        const errorMsg = data.details || data.error || 'Fout bij controleren antwoord'
+        throw new Error(errorMsg)
+      }
+
+      if (!data.evaluation) {
+        throw new Error('Geen evaluatie ontvangen van de server')
+      }
+
       setEvaluation(data.evaluation)
       setCurrentStep('feedback')
 
@@ -142,7 +159,8 @@ export default function NatuurkundeOefenApp() {
       localStorage.setItem('natuurkunde_score', JSON.stringify(newScore))
     } catch (error) {
       console.error('Error:', error)
-      alert('Fout bij het controleren. Probeer opnieuw.')
+      const message = error instanceof Error ? error.message : 'Onbekende fout'
+      alert(`Fout bij het controleren:\n${message}\n\nProbeer opnieuw.`)
     } finally {
       setIsLoading(false)
     }
